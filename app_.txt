@@ -1,0 +1,44 @@
+from flask import Flask, jsonify
+from flask_restful import Resource, Api
+import re
+import pickle
+import numpy as np
+from flask_cors import CORS
+import pandas as pd
+
+app = Flask(__name__)
+CORS(app)
+api = Api(app)
+
+with open('fine_tuned_Decision Tree.pkl', 'rb') as f:
+    model = pickle.load(f)
+
+
+class prediction(Resource):
+    def get(self, comment):
+        # Your prediction code goes here
+        # You can replace the example code below with your own logic
+        # Preprocess the text input to match the format expected by the model
+        df = pd.DataFrame(comment, columns=['Marketing Budget'])
+        model = pickle.load(open('fine_tuned_Decision Tree.pkl.pkl', 'rb'))
+        prediction = model.predict(df)
+        prediction = (prediction[0])
+        return str(prediction)
+
+
+# Define a function to preprocess the text input
+def preprocess_text(text):
+    # Replace any non-alphanumeric characters with spaces
+    text = re.sub('[^0-9a-zA-Z]+', ' ', text)
+
+    # Convert the text to lowercase
+    text = text.lower()
+
+    # Return the preprocessed text
+    return text
+
+
+api.add_resource(prediction, '/prediction/<comment>')
+
+if __name__ == '__main__':
+    app.run(debug=True)
