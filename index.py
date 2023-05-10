@@ -60,8 +60,8 @@ class prediction(Resource):
                 'Positive': positive_perc}
         return sult
 
-
 api.add_resource(prediction, '/prediction/<string:comment>')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()#(debug=False,host='0.0.0.0')
+    # app.run(debug=True)
